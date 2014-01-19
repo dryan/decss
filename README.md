@@ -196,6 +196,10 @@ $bodyFontSizeLarge:         24px;
 
 See [the variables.scss file](https://github.com/dryan/decss/blob/master/sass/variables.scss) for the complete list of options. Customizing the SASS files requires [bourbon.io](http://bourbon.io).
 
+## Multi-screen Syncing
+
+To syncronize presentations across multiple devices, you will need to run an instance of [decss-sync](https://github.com/dryan/decss-sync). On the deck element, set the `data-sync-server` attribute to point to your sync server.
+
 ## JavaScript API
 
 Once the deck is setup, the `window.Decss` variable will point to the current Deck object. This object has several properties and methods you may use. Properties and methods beginning with `__` are considered private and are subject to change in the future.
