@@ -72,6 +72,26 @@ To place multiple images in a row, wrap them with a `<figure>` tag. Additionally
 </figure>
 ```
 
+### Background Images
+
+Slide backgrounds are set using the normal CSS `background-image` property. Decss sets these to use `background-size: cover` for you.
+
+```html
+<!-- inline background -->
+<section id="intro" style="background-image: url('http://placekitten.com/1280/1280')">
+</section>
+
+<!-- CSS style tag or external file -->
+<section id="intro">
+</section>
+<style>
+    #intro {
+        background-image: url('http://placekitten.com/1280/1280');
+    }
+</style>
+```
+
+
 ## Builds / Steps
 
 Sometimes you want items to appear manually instead of when the slide first appears. Adding a `data-step` attribute to elements achieves this.
@@ -155,6 +175,26 @@ A third style, slide, is in the works but is pretty buggy at the moment.
 Pressing control+escape will toggle a presenter mode. In this mode, you will see the current slide with any unrevealed steps slightly visible, the next slide to be shown, a timer of how long the presentation has been running and a selector to jump between slides. Beneath each slide is the number of the current slide, which step that slide is on, and any presenter notes set with a `data-notes` attribute on the slide.
 
 Presentation mode adds a `presenter` class to the `<html>` tag that you can use for addition  styling.
+
+## Customizing the Deck's Style
+
+You can include the base `decss.css` file and then override it with your own CSS, but the better method is to use SASS to create your own custom CSS file.
+
+```sass
+// set the initial variables
+$bodyBackground:            black;
+$bodyColor:                 white;
+$bodyFont:                  'Open Sans', sans-serif;
+$bodyWeight:                400;
+$bodyFontSizeBase:          16px;
+$bodyFontSizeLarge:         24px;
+
+@import "decss";
+
+// add more custom styles below
+```
+
+See [https://github.com/dryan/decss/blob/master/sass/variables.scss](variable.scss) for the complete list of options.
 
 ## JavaScript API
 
