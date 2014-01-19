@@ -419,7 +419,7 @@
             _deck.__body.setAttribute('data-current-slide', cleanHash());
             _deck.__body.scrollTop  =   0;
             _deck.__setProgress(_deck.slides.indexOf(slide) + 1);
-            queryElements(slide, '[data-autoplay]').forEach(function(media) {
+            queryElements(slide, 'audio:not([data-step]):not([controls]),video:not([data-step]):not([controls])').forEach(function(media) {
                 if(media.play) {
                     if(media.played.length) {
                         media.src   =   media.currentSrc;
