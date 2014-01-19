@@ -276,7 +276,7 @@
         }
 
         // send out the deckinit event
-        _deck.__emitEvent('deckinit');
+        _deck.__emitEvent('decssinit');
     };
 
     // normalize the 1,800 ways to request a fullscreen presentation
@@ -395,7 +395,7 @@
     };
 
     // send change events to 
-    document.addEventListener('deckchange', function(e) {
+    document.addEventListener('decsschange', function(e) {
         if(e.detail && e.detail.deck && e.detail.slide && e.detail.sender && e.detail.sender !== 'socket') {
             var
             _deck   =   e.detail.deck;
@@ -486,10 +486,10 @@
             }
         }
         _deck.currentSlide.setAttribute('data-current-step', _deck.currentSlide.currentStep);
-        _deck.__emitEvent('deckchange', {'slide': _deck.currentSlide, 'step': _deck.currentSlide.currentStep, 'sender': sender});
+        _deck.__emitEvent('decsschange', {'slide': _deck.currentSlide, 'step': _deck.currentSlide.currentStep, 'sender': sender});
         if(_deck.currentPosition === _deck.slides.length - 1 && _deck.currentSlide.currentStep === _deck.currentSlide.steps) {
             // the deck is finished
-            _deck.__emitEvent('deckend', {'sender': sender});
+            _deck.__emitEvent('decssend', {'sender': sender});
         }
     };
 
