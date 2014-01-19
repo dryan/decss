@@ -519,7 +519,7 @@
 
     var
     deck            =   new Deck();
-    window.Deck     =   deck;
+    window.Decss    =   deck;
     deck.init();
 
 })(window, document, window.console, window.WebSocket, window.JSON);
