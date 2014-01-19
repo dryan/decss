@@ -1,0 +1,31 @@
+@import "bourbon";
+
+$black:     #000000;
+$red:       #ae1215;
+$blue:      #97ccee;
+$white:     #ffffff;
+
+$bodyBackground:    $black;
+$bodyColor:         $blue;
+$bodyFont:          'Archer SSm A', 'Archer SSm B', $helvetica;
+$bodyWeight:        500;
+
+$headerFont:        'Sentinel', 'Sentinel SSm A', 'Sentinel SSm B', $georgia;
+$headerWeight:      400;
+$headerColor:       $red;
+
+$progressColor: transparentize($red, 0.1);
+$progressBackground: transparentize($white, 0.5);
+
+$linkColor: $blue;
+
+a {
+    border-bottom: 1px solid transparentize($blue, 0.5);
+    @include inline-block;
+}
+
+@import "decss";
+
+header {
+    background: transparentize($white, 0.9);
+}

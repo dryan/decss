@@ -1,0 +1,22 @@
+@import "bourbon";
+
+$bodyBackground:            #333 !default;
+$bodyColor:                 #ddd !default;
+$bodyFont:                  $helvetica !default;
+$bodyWeight:                normal !default;
+$bodyFontSizeBase:          24px !default;
+$bodyFontSizeLarge:         36px !default;
+
+$normalized_font_family:    $bodyFont !default;
+
+$headerColor:               #fff !default;
+$headerFont:                $georgia !default;
+$headerWeight:              bold !default;
+
+$linkColor:                 #428bca !default;
+
+$slideBackgroundColor:      $bodyBackground !default;
+$transitionDuration:        1s;
+
+$progressBackground:        $bodyBackground !default;
+$progressColor:             $bodyColor !default;
