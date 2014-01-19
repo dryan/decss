@@ -194,7 +194,7 @@ $bodyFontSizeLarge:         24px;
 // add more custom styles below
 ```
 
-See [https://github.com/dryan/decss/blob/master/sass/variables.scss](variable.scss) for the complete list of options.
+See [the variables.scss file](https://github.com/dryan/decss/blob/master/sass/variables.scss) for the complete list of options. Customizing the SASS files requires [bourbon.io](http://bourbon.io).
 
 ## JavaScript API
 
