@@ -51,6 +51,9 @@
         return str;
     }
 
+    var
+    controller  =   false;
+
     // the main object
     // methods and properties prefixed with __ are considered private and subject to change or removal
     function Deck() {
@@ -276,7 +279,7 @@
         }
 
         // send out the deckinit event
-        _deck.__emitEvent('deckinit');
+        _deck.__emitEvent('decssinit');
     };
 
     // normalize the 1,800 ways to request a fullscreen presentation
@@ -305,7 +308,9 @@
     Deck.prototype.__socketSend   =   function(message) {
         if(message) {
             // the message ID is used server side to handle multiple decks going at once
-            message.id  =   this.id;
+            message.id      =   this.id;
+            // if the type isn't set, assume it's a "sync" message
+            message.type    =   message.type ? message.type : 'sync';
             // put the message into a queue in case the socket goes down
             this.__socketQueue.push(message);
         }
@@ -333,9 +338,10 @@
                 // remote control
                 var
                 _deck   =   this; // set to a var for use in internal functions
-                _deck.__socket         =   new WebSocket(['ws://', _deck.deck.getAttribute('data-sync-server')].join(''));
+                _deck.__socket         =   new WebSocket(['ws://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
                 _deck.__socket.onopen      =   function() {
                     _deck.__socketReady    =   true;
+                    _deck.__socketSend({'type': 'ping'});
                 };
                 _deck.__socket.onerror     =   function(error) {
                     _deck.__debug('socket error', error);
@@ -343,8 +349,10 @@
                 _deck.__socket.onmessage   =   function(message) {
                     _deck.__debug('received message', message);
                     message     =   JSON.parse(message.data);
-                    if(message.id === _deck.id) {
+                    if(message.type === 'sync') {
                         _deck.changeToSlide(cleanHash(message.hash), message.step, 'socket');
+                    } else if(message.type === 'pong') {
+                        controller  =   message.auth;
                     }
                 };
                 _deck.__socket.onclose     =   function() {
@@ -353,6 +361,7 @@
                 };
             };
         } else {
+            // dummy fallback if websockets aren't supported
             this.__socketSetup    =   function() {
                 this.__socket  =   {
                     'send':     function() {},
@@ -395,8 +404,8 @@
     };
 
     // send change events to 
-    document.addEventListener('deckchange', function(e) {
-        if(e.detail && e.detail.deck && e.detail.slide && e.detail.sender && e.detail.sender !== 'socket') {
+    document.addEventListener('decsschange', function(e) {
+        if(controller && e.detail && e.detail.deck && e.detail.slide && e.detail.sender && e.detail.sender !== 'socket') {
             var
             _deck   =   e.detail.deck;
             _deck.__socketSend({'hash': e.detail.slide.getAttribute('id'), 'step': e.detail.step});
@@ -419,7 +428,7 @@
             _deck.__body.setAttribute('data-current-slide', cleanHash());
             _deck.__body.scrollTop  =   0;
             _deck.__setProgress(_deck.slides.indexOf(slide) + 1);
-            queryElements(slide, '[data-autoplay]').forEach(function(media) {
+            queryElements(slide, 'audio:not([data-step]):not([controls]),video:not([data-step]):not([controls])').forEach(function(media) {
                 if(media.play) {
                     if(media.played.length) {
                         media.src   =   media.currentSrc;
@@ -486,10 +495,10 @@
             }
         }
         _deck.currentSlide.setAttribute('data-current-step', _deck.currentSlide.currentStep);
-        _deck.__emitEvent('deckchange', {'slide': _deck.currentSlide, 'step': _deck.currentSlide.currentStep, 'sender': sender});
+        _deck.__emitEvent('decsschange', {'slide': _deck.currentSlide, 'step': _deck.currentSlide.currentStep, 'sender': sender});
         if(_deck.currentPosition === _deck.slides.length - 1 && _deck.currentSlide.currentStep === _deck.currentSlide.steps) {
             // the deck is finished
-            _deck.__emitEvent('deckend', {'sender': sender});
+            _deck.__emitEvent('decssend', {'sender': sender});
         }
     };
 
@@ -519,7 +528,7 @@
 
     var
     deck            =   new Deck();
-    window.Deck     =   deck;
+    window.Decss    =   deck;
     deck.init();
 
 })(window, document, window.console, window.WebSocket, window.JSON);
