@@ -359,6 +359,9 @@
                         controller      =   message.auth;
                         _deck.inControl =   !!controller;
                         _deck.deck.setAttribute('data-in-control', !!controller);
+                        if(_deck.allowControl === null) {
+                            _deck.allowControl  =   true;
+                        }
                     }
                 };
                 _deck.__socket.onclose     =   function() {
