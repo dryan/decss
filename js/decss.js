@@ -52,7 +52,8 @@
     }
 
     var
-    controller  =   false;
+    controller  =   false,
+    _deck;
 
     // the main object
     // methods and properties prefixed with __ are considered private and subject to change or removal
@@ -75,6 +76,8 @@
         this.touchDistance      =   Math.max(this.deck.getAttribute('data-touch-distance') ? parseFloat(this.deck.getAttribute('data-touch-distance')) : 0, 150);
         this.fullscreen         =   false;
         this.debug              =   this.deck.getAttribute('data-debug') ? !!JSON.parse(this.deck.getAttribute('data-debug')) : false;
+        this.inControl          =   false;
+        this.allowControl       =   null;
     }
 
     Deck.prototype.__debug      =   function() {
@@ -85,10 +88,6 @@
 
     // where most of the work happens
     Deck.prototype.init =   function() {
-        // set 'this' to a variable to be safely referenced inside loops
-        var 
-        _deck   =   this;
-
         // set up the progress bar
         _deck.__progress.setAttribute('max', _deck.slides.length);
         _deck.__setProgress(1);
@@ -336,23 +335,30 @@
         if(WebSocket && this.deck.getAttribute('data-sync-server')) {
             this.__socketSetup =   function() {
                 // remote control
-                var
-                _deck   =   this; // set to a var for use in internal functions
-                _deck.__socket         =   new WebSocket(['ws://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
+                _deck.__socket         =   new WebSocket(['wss://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
                 _deck.__socket.onopen      =   function() {
                     _deck.__socketReady    =   true;
                     _deck.__socketSend({'type': 'ping'});
                 };
                 _deck.__socket.onerror     =   function(error) {
-                    _deck.__debug('socket error', error);
+                    try {
+                        console.error('socket error', error);
+                    } catch(e) {}
                 };
                 _deck.__socket.onmessage   =   function(message) {
                     _deck.__debug('received message', message);
                     message     =   JSON.parse(message.data);
                     if(message.type === 'sync') {
-                        _deck.changeToSlide(cleanHash(message.hash), message.step, 'socket');
+                        if(_deck.allowControl === null) {
+                            _deck.allowControl  =   window.confirm('Allow the presenter to control your screen?');
+                        }
+                        if(_deck.allowControl) {
+                            _deck.changeToSlide(cleanHash(message.hash), message.step, 'socket');
+                        }
                     } else if(message.type === 'pong') {
-                        controller  =   message.auth;
+                        controller      =   message.auth;
+                        _deck.inControl =   !!controller;
+                        _deck.deck.setAttribute('data-in-control', !!controller);
                     }
                 };
                 _deck.__socket.onclose     =   function() {
@@ -374,7 +380,6 @@
 
     Deck.prototype.__updateTimer  =   function() {
         var
-        _deck   =   this,
         now     =   new Date(),
         elapsed;
         if(!_deck.__started) {
@@ -413,8 +418,6 @@
     }, false);
 
     Deck.prototype.changeToSlide    =   function(slide, step, sender) {
-        var
-        _deck   =   this;
         if(!_deck.__started && (sender === 'keyboard' || sender === 'touch')) {
             _deck.__updateTimer();
         }
@@ -526,9 +529,8 @@
         this.changeToSlide(this.slides[this.slides.length - 1], 0, sender);
     };
 
-    var
-    deck            =   new Deck();
-    window.Decss    =   deck;
-    deck.init();
+    _deck           =   new Deck();
+    window.Decss    =   _deck;
+    _deck.init();
 
 })(window, document, window.console, window.WebSocket, window.JSON);
