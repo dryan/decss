@@ -51,6 +51,9 @@
         return str;
     }
 
+    var
+    controller  =   false;
+
     // the main object
     // methods and properties prefixed with __ are considered private and subject to change or removal
     function Deck() {
@@ -305,7 +308,9 @@
     Deck.prototype.__socketSend   =   function(message) {
         if(message) {
             // the message ID is used server side to handle multiple decks going at once
-            message.id  =   this.id;
+            message.id      =   this.id;
+            // if the type isn't set, assume it's a "sync" message
+            message.type    =   message.type ? message.type : 'sync';
             // put the message into a queue in case the socket goes down
             this.__socketQueue.push(message);
         }
@@ -333,9 +338,10 @@
                 // remote control
                 var
                 _deck   =   this; // set to a var for use in internal functions
-                _deck.__socket         =   new WebSocket(['ws://', _deck.deck.getAttribute('data-sync-server')].join(''));
+                _deck.__socket         =   new WebSocket(['ws://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
                 _deck.__socket.onopen      =   function() {
                     _deck.__socketReady    =   true;
+                    _deck.__socketSend({'type': 'ping'});
                 };
                 _deck.__socket.onerror     =   function(error) {
                     _deck.__debug('socket error', error);
@@ -343,8 +349,10 @@
                 _deck.__socket.onmessage   =   function(message) {
                     _deck.__debug('received message', message);
                     message     =   JSON.parse(message.data);
-                    if(message.id === _deck.id) {
+                    if(message.type === 'sync') {
                         _deck.changeToSlide(cleanHash(message.hash), message.step, 'socket');
+                    } else if(message.type === 'pong') {
+                        controller  =   message.auth;
                     }
                 };
                 _deck.__socket.onclose     =   function() {
@@ -353,6 +361,7 @@
                 };
             };
         } else {
+            // dummy fallback if websockets aren't supported
             this.__socketSetup    =   function() {
                 this.__socket  =   {
                     'send':     function() {},
@@ -396,7 +405,7 @@
 
     // send change events to 
     document.addEventListener('decsschange', function(e) {
-        if(e.detail && e.detail.deck && e.detail.slide && e.detail.sender && e.detail.sender !== 'socket') {
+        if(controller && e.detail && e.detail.deck && e.detail.slide && e.detail.sender && e.detail.sender !== 'socket') {
             var
             _deck   =   e.detail.deck;
             _deck.__socketSend({'hash': e.detail.slide.getAttribute('id'), 'step': e.detail.step});
