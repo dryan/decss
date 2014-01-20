@@ -198,7 +198,9 @@ See [the variables.scss file](https://github.com/dryan/decss/blob/master/sass/va
 
 ## Multi-screen Syncing
 
-To syncronize presentations across multiple devices, you will need to run an instance of [decss-sync](https://github.com/dryan/decss-sync). On the deck element, set the `data-sync-server` attribute to point to your sync server.
+To syncronize presentations across multiple devices, you will need to create a Deck ID at [sync.dryan.io](http://sync.dryan.io/) or run an instance of [decss-sync](https://github.com/dryan/decss-sync). On the deck element, set the `data-sync-server` attribute to point to the correct sync server.
+
+When syncing is first setup, the deck element gets a `data-in-control="true"` or `data-in-control="false"` attribute added, depending on if the viewer is logged into the sync server and owns this deck.
 
 ## JavaScript API
 
@@ -220,6 +222,10 @@ The `slide` argument may be an instance of a slide, the `id` attribute of a slid
 If `step` is set, the given slide will be set to that step. Leaving it `null` will keep the slide in its current state.
 
 The `sender` argument is used to track the source of the `changeToSlide` call. This is passed on to emitted events for use by event listeners.
+
+### Decss.allowControl
+
+A boolean indicating if this viewer has allowed the sync server to control navigation.
 
 ### Decss.currentPosition
 
@@ -256,6 +262,10 @@ Navigates to the first slide of the deck and resets its currentStep to 0.
 ### Decsss.id
 
 The value of the deck element's `data-id` attribute. Used by multi-screen syncing.
+
+### Decss.inControl
+
+A boolean indicating if this Deck instance is controlling remote viewers.
 
 ### Decss.init()
 
