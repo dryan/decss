@@ -24,6 +24,12 @@ body {
     @media (min-width: 30em) {
         font-size: $bodyFontSizeLarge;
     }
+    @media (max-height: 600px) {
+        font-size: 3vh;
+    }
+    @media (max-width: 480px) {
+        font-size: 4vw;
+    }
 }
 
 html.presenter,
@@ -37,6 +43,15 @@ html.presenter body {
     font-weight: $bodyWeight;
     font-size: $bodyFontSizeBase;
     color: $bodyColor;
+    @media (min-width: 30em) {
+        font-size: $bodyFontSizeLarge;
+    }
+    @media (max-height: 600px) {
+        font-size: 3vh;
+    }
+    @media (max-width: 480px) {
+        font-size: 4vw;
+    }
 }
 
 body * {
