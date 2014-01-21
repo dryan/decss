@@ -200,6 +200,8 @@ See [the variables.scss file](https://github.com/dryan/decss/blob/master/sass/va
 
 To syncronize presentations across multiple devices, you will need to create a Deck ID at [sync.dryan.io](http://sync.dryan.io/) or run an instance of [decss-sync](https://github.com/dryan/decss-sync). On the deck element, set the `data-sync-server` attribute to point to the correct sync server.
 
+By default, the WebSocket connection is made over SSL. If you're running your own instance of decss-sync without SSL support, add `data-sync-insecure="true"` to your deck element. [sync.dryan.io](http://sync.dryan.io/) *will not* work over insecure connections.
+
 When syncing is first setup, the deck element gets a `data-in-control="true"` or `data-in-control="false"` attribute added, depending on if the viewer is logged into the sync server and owns this deck.
 
 ## JavaScript API

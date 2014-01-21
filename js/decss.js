@@ -377,7 +377,7 @@
         if(WebSocket && this.deck.getAttribute('data-sync-server')) {
             this.__socketSetup =   function() {
                 // remote control
-                _deck.__socket         =   new WebSocket(['wss://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
+                _deck.__socket         =   new WebSocket([(!!JSON.parse(_deck.deck.getAttribute('data-sync-insecure')) ? 'ws' : 'wss'), '://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
                 _deck.__socket.onopen      =   function() {
                     _deck.__socketReady    =   true;
                     _deck.__socketSend({'type': 'ping'});
