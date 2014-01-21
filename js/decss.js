@@ -235,34 +235,29 @@
         // setup the keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             switch(e.keyCode) {
-                case 33:
-                    // page up
-                case 37:
-                    // left
+                case 33: // page up
+                case 37: // left
+                case 74: // J
                     _deck.previous('keyboard');
                     break;
-                case 34:
-                    // page down
-                case 39:
-                    // right
+                case 34: // page down
+                case 39: // right
+                case 75: // K
                     _deck.next('keyboard');
                     break;
-                case 27:
-                    // escape
-                    if(e.ctrlKey) {
+                case 27: // escape
+                case 80: // P
+                    if(e.ctrlKey || e.keyCode === 80) {
                         _deck.__html.classList.toggle('presenter');
                     }
                     break;
-                case 35:
-                    // end
+                case 35: // end
                     _deck.end('keyboard');
                     break;
-                case 36:
-                    // home
+                case 36: // home
                     _deck.home('keyboard');
                     break;
-                case 70:
-                    // F
+                case 70: // F
                     _deck.goFullscreen();
                     break;
                 default:
@@ -377,7 +372,7 @@
         if(WebSocket && this.deck.getAttribute('data-sync-server')) {
             this.__socketSetup =   function() {
                 // remote control
-                _deck.__socket         =   new WebSocket(['wss://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
+                _deck.__socket         =   new WebSocket([(!!JSON.parse(_deck.deck.getAttribute('data-sync-insecure')) ? 'ws' : 'wss'), '://', _deck.deck.getAttribute('data-sync-server'), '/socket/'].join(''));
                 _deck.__socket.onopen      =   function() {
                     _deck.__socketReady    =   true;
                     _deck.__socketSend({'type': 'ping'});
