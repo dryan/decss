@@ -104,8 +104,10 @@ section {
         @media (min-width: 481px) {
             padding: 0 40px;
         }
-        -webkit-flex: 0 0 auto;
-        flex: 0 0 auto;
+        @media screen {
+            -webkit-flex: 0 0 auto;
+            flex: 0 0 auto;
+        }
     }
     .ready & {
         @include transition-duration($transitionDuration);
@@ -130,32 +132,34 @@ section {
 
 center,
 header:only-child {
-    display: -webkit-flex;
-    display:         flex;
-    -webkit-align-items: center;
-            align-items: center;
-    -webkit-justify-content: center;
-            justify-content: center;
-    -webkit-align-content: center;
-            align-content: center;
-    -webkit-flex-direction: column;
-            flex-direction: column;
-    -webkit-flex: 2 1 auto;
-            flex: 2 1 auto;
     padding-top: 40px;
     padding-bottom: 40px;
     height: 100%;
     width: 100%;
-    > * {
-        -webkit-flex: 0 1 auto;
-                flex: 0 1 auto;
-    }
-    &.horizontal {
-        -webkit-flex-direction: row;
-                flex-direction: row;
+    @media screen {
+        display: -webkit-flex;
+        display:         flex;
+        -webkit-align-items: center;
+                align-items: center;
+        -webkit-justify-content: center;
+                justify-content: center;
+        -webkit-align-content: center;
+                align-content: center;
+        -webkit-flex-direction: column;
+                flex-direction: column;
+        -webkit-flex: 2 1 auto;
+                flex: 2 1 auto;
         > * {
-            -webkit-flex: 1 1 auto;
-                    flex: 1 1 auto;
+            -webkit-flex: 0 1 auto;
+                    flex: 0 1 auto;
+        }
+        &.horizontal {
+            -webkit-flex-direction: row;
+                    flex-direction: row;
+            > * {
+                -webkit-flex: 1 1 auto;
+                        flex: 1 1 auto;
+            }
         }
     }
 }
@@ -166,65 +170,67 @@ center {
     }
 }
 
-figure {
-    text-align: justify;
-    text-align-last: justify;
-    @include column-gap(1em);
-    &.two-up {
-        @include column-count(2);
-    }
-    &.three-up {
-        @include column-count(3);
-    }
-    &.four-up {
-        @include column-count(4);
-    }
-    &.five-up {
-        @include column-count(5);
-    }
-}
-
-img {
-    figure & {
-        width: auto;
-        height: auto;
-        max-width: 100%;
-        max-height: 100%;
-        margin: 0 auto;
-        display: block;
-    }
-}
-
-.js {
-    [data-step] {
-        opacity: 0;
-        @include transition-duration($transitionDuration);
-        @include transition-property(opacity);
-    }
-    [data-step="0"],
-    [data-step].active {
-        opacity: 1;
-    }
-    &.csstransforms3d {
-        [data-step] {
-            @include transition-property(opacity, transform);
-            @include transform(translate3d(0,-10px,0));
-            @include transition-delay(0, $transitionDuration);
+@media screen {
+    figure {
+        text-align: justify;
+        text-align-last: justify;
+        @include column-gap(1em);
+        &.two-up {
+            @include column-count(2);
         }
-        [data-step="0"],
-        [data-step].active {
-            @include transform(translate3d(0,0,0));
-            @include transition-delay(0);
+        &.three-up {
+            @include column-count(3);
+        }
+        &.four-up {
+            @include column-count(4);
+        }
+        &.five-up {
+            @include column-count(5);
         }
     }
-    &.presenter {
+
+    img {
+        figure & {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 100%;
+            margin: 0 auto;
+            display: block;
+        }
+    }
+
+    .js {
         [data-step] {
-            opacity: 0.5;
-            @include transform(translate3d(0,0,0));
+            opacity: 0;
+            @include transition-duration($transitionDuration);
+            @include transition-property(opacity);
         }
         [data-step="0"],
         [data-step].active {
             opacity: 1;
+        }
+        &.csstransforms3d {
+            [data-step] {
+                @include transition-property(opacity, transform);
+                @include transform(translate3d(0,-10px,0));
+                @include transition-delay(0, $transitionDuration);
+            }
+            [data-step="0"],
+            [data-step].active {
+                @include transform(translate3d(0,0,0));
+                @include transition-delay(0);
+            }
+        }
+        &.presenter {
+            [data-step] {
+                opacity: 0.5;
+                @include transform(translate3d(0,0,0));
+            }
+            [data-step="0"],
+            [data-step].active {
+                opacity: 1;
+            }
         }
     }
 }
@@ -244,89 +250,91 @@ img {
     }
 }
 
-body:not([data-transition]),
-body[data-transition="fade"] {
-    section {
-        @extend %default_transition;
-    }
-}
-
-body[data-transition="zoom"] {
-    .csstransforms3d & {
+@media screen {
+    body:not([data-transition]),
+    body[data-transition="fade"] {
         section {
-            @include transition-property(opacity, transform);
-            @include transform(scale(1));
-            opacity: 1;
-            &:target ~ section {
-                @include transform(scale(1.25));
+            @extend %default_transition;
+        }
+    }
+
+    body[data-transition="zoom"] {
+        .csstransforms3d & {
+            section {
+                @include transition-property(opacity, transform);
+                @include transform(scale(1));
+                opacity: 1;
+                &:target ~ section {
+                    @include transform(scale(1.25));
+                }
             }
         }
-    }
-    .no-js &,
-    .no-csstransforms3d & {
-        @extend %default_transition;
-    }
-}
-
-body[data-transition="slide"] {
-    section {
-        @include transition-property(opacity, left, right);
-        left: -100%;
-        right: 100%;
-        opacity: 0.5;
-        &:target {
-            opacity: 1;
-            left: 0;
-            right: 0;
-        }
-        &:target ~ section {
-            left: 100%;
-            right: -100%;
+        .no-js &,
+        .no-csstransforms3d & {
+            @extend %default_transition;
         }
     }
-    .no-js & {
-        @extend %default_transition;
-    }
-}
 
-body[data-transition] {
-    .presenter.csstransforms3d & {
-        section:target,
-        section:target ~ section {
-            &:after {
-                font-family: $helvetica;
-                content: "Slide: " attr(data-slide) "/" attr(data-total) "     Step: " attr(data-current-step) "/" attr(data-steps) "\A\A" attr(data-notes);
-                width: 100%;
-                text-align: center;
-                position: absolute;
-                right: 0;
-                top: 100%;
+    body[data-transition="slide"] {
+        section {
+            @include transition-property(opacity, left, right);
+            left: -100%;
+            right: 100%;
+            opacity: 0.5;
+            &:target {
+                opacity: 1;
                 left: 0;
-                white-space: pre-wrap;
-                background: black;
-                padding: 0.5em 0 0;
+                right: 0;
+            }
+            &:target ~ section {
+                left: 100%;
+                right: -100%;
             }
         }
-        section,
-        section:target,
-        section:target + section,
-        section:target ~ section {
-            @include transition-property(transform, opacity);
-            @include transform(scale(0.75) translate3d(-19%, -15%, 0));
-            opacity: 1;
+        .no-js & {
+            @extend %default_transition;
         }
-        section:target ~ section {
-            opacity: 0;
-        }
-        section:target ~ section,
-        section:target + section {
-            @include transform(scale(0.25) translate3d(148%, -50%, 0));
-        }
-        section:target + section {
-            opacity: 0.75;
-        }
-        section:target {
-            opacity: 1;
+    }
+
+    body[data-transition] {
+        .presenter.csstransforms3d & {
+            section:target,
+            section:target ~ section {
+                &:after {
+                    font-family: $helvetica;
+                    content: "Slide: " attr(data-slide) "/" attr(data-total) "     Step: " attr(data-current-step) "/" attr(data-steps) "\A\A" attr(data-notes);
+                    width: 100%;
+                    text-align: center;
+                    position: absolute;
+                    right: 0;
+                    top: 100%;
+                    left: 0;
+                    white-space: pre-wrap;
+                    background: black;
+                    padding: 0.5em 0 0;
+                }
+            }
+            section,
+            section:target,
+            section:target + section,
+            section:target ~ section {
+                @include transition-property(transform, opacity);
+                @include transform(scale(0.75) translate3d(-19%, -15%, 0));
+                opacity: 1;
+            }
+            section:target ~ section {
+                opacity: 0;
+            }
+            section:target ~ section,
+            section:target + section {
+                @include transform(scale(0.25) translate3d(148%, -50%, 0));
+            }
+            section:target + section {
+                opacity: 0.75;
+            }
+            section:target {
+                opacity: 1;
+            }
         }
     }
 }
@@ -401,5 +409,108 @@ progress {
     max-width: 20%;
     .presenter & {
         top: 3em;
+    }
+}
+
+@media print {
+    html,
+    body,
+    #deck {
+        background: white;
+        color: black;
+        height: auto;
+        min-height: 100%;
+    }
+
+    #deck {
+        overflow: visible;
+        width: auto;
+        margin: 0.1in;
+    }
+
+    #deck * {
+        background: transparent !important;
+        color: black !important;
+    }
+
+    progress,
+    #timer,
+    #selector {
+        display: none;
+    }
+
+    section {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        min-height: 96%;
+        min-height: 96vh;
+        height: auto;
+        padding: 0.5in;
+        margin: 0.1in auto;
+        display: block !important;
+        page-break-before: always;
+        page-break-inside: avoid;
+        opacity: 1 !important;
+        text-align: center;
+        @include transform(none !important);
+        &:empty {
+            display: none; // hide slides that are only backgrounds
+        }
+        &:first-child {
+            page-break-before: initial;
+        }
+    }
+    [data-step] {
+        opacity: 1 !important;
+        @include transform(none !important);
+    }
+    center {
+        display: block;
+        text-align: center;
+    }
+    center,
+    header:only-child,
+    center.horizontal,
+    header:only-child.horizontal {
+        > * {
+            -webkit-flex: 0 0 auto;
+                    flex: 0 0 auto;
+            text-align: center;
+        }
+        > ul {
+            text-align: left;
+            @include inline-block;
+        }
+    }
+    figure {
+        @include clearfix;
+        text-align: center;
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        &.two-up {
+            img {
+                width: 49%;
+            }
+        }
+        &.three-up-up {
+            img {
+                width: 32%;
+            }
+        }
+        &.four-up {
+            img {
+                width: 24%;
+            }
+        }
+        &.five-up {
+            img {
+                width: 19%;
+            }
+        }
     }
 }
