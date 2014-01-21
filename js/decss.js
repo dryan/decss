@@ -235,34 +235,29 @@
         // setup the keyboard shortcuts
         document.addEventListener('keydown', function(e) {
             switch(e.keyCode) {
-                case 33:
-                    // page up
-                case 37:
-                    // left
+                case 33: // page up
+                case 37: // left
+                case 74: // J
                     _deck.previous('keyboard');
                     break;
-                case 34:
-                    // page down
-                case 39:
-                    // right
+                case 34: // page down
+                case 39: // right
+                case 75: // K
                     _deck.next('keyboard');
                     break;
-                case 27:
-                    // escape
-                    if(e.ctrlKey) {
+                case 27: // escape
+                case 80: // P
+                    if(e.ctrlKey || e.keyCode === 80) {
                         _deck.__html.classList.toggle('presenter');
                     }
                     break;
-                case 35:
-                    // end
+                case 35: // end
                     _deck.end('keyboard');
                     break;
-                case 36:
-                    // home
+                case 36: // home
                     _deck.home('keyboard');
                     break;
-                case 70:
-                    // F
+                case 70: // F
                     _deck.goFullscreen();
                     break;
                 default:

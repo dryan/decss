@@ -155,9 +155,9 @@ The following keys may be used to navigate through the deck:
 
 * Beginning of deck: home
 * End of deck: end
-* Previous slide/step: left arrow or page up
-* Next slide/step: right arrow or page down
-* Presenter mode: control + escape
+* Previous slide/step: left arrow, page up, J or j
+* Next slide/step: right arrow, page down, K or k
+* Presenter mode: control+escape, P or p (note that control+escape is a system shortcut on Windows)
 * Fullscreen mode: F or f
 
 Additionally, on touch enabled devices, swiping towards the right edge of the screen goes forwards and swiping towards the left edge goes backwards.
