@@ -359,6 +359,9 @@
                         controller      =   message.auth;
                         _deck.inControl =   !!controller;
                         _deck.deck.setAttribute('data-in-control', !!controller);
+                        if(_deck.allowControl === null) {
+                            _deck.allowControl  =   true;
+                        }
                     }
                 };
                 _deck.__socket.onclose     =   function() {
@@ -529,8 +532,18 @@
         this.changeToSlide(this.slides[this.slides.length - 1], 0, sender);
     };
 
-    _deck           =   new Deck();
-    window.Decss    =   _deck;
-    _deck.init();
+    // sets the internal and global variables and runs the init method
+    function bootstrap() {
+        _deck           =   new Deck();
+        window.Decss    =   _deck;
+        _deck.init();
+    }
+    if(document.readyState === 'complete') {
+        bootstrap();
+        // if the DOM is ready, run the init now
+    } else {
+        // if the DOM in not ready, add a listener
+        document.addEventListener('DOMContentLoaded', bootstrap, false);
+    }
 
 })(window, document, window.console, window.WebSocket, window.JSON);
