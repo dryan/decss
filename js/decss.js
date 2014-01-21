@@ -10,6 +10,8 @@
         'addeventlistener':     window.addEventListener,
         'forEach':              Array.prototype.forEach,
         'indexOf':              Array.prototype.indexOf,
+        'map':                  Array.prototype.map,
+        'reduce':               Array.prototype.reduce,
         'json':                 JSON && JSON.parse && JSON.stringify
     },
     dependenciesMet =   true; // optimisim
@@ -49,6 +51,38 @@
             str     =   [pad, str].join('');
         }
         return str;
+    }
+
+    // removes duplicate elements from an array
+    function dedupe(arr) {
+        return arr.reduce(function(newArray, item) {
+            if(newArray.indexOf(item) < 0) {
+                newArray.push(item);
+            }
+            return newArray;
+        }, []);
+    }
+
+    // returns an array containing the integers between min and max, inclusive
+    function range(min, max) {
+        var
+        ret     =   [];
+        while(min <= max) {
+            ret.push(min++);
+        }
+        return ret;
+    }
+
+    // returns the sum of all values in the array
+    function sum(arr) {
+        return arr.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+    }
+
+    // used to grab the data-step values from the steps
+    function getStepNumber(elem) {
+        return parseFloat(elem.getAttribute('data-step')) * 1;
     }
 
     var
@@ -106,13 +140,21 @@
             }
             // count the number of steps in each slide
             var
-            steps           =   "0"; // for comparison against string attributes
-            queryElements(slide, '[data-step]').forEach(function(step) {
-                steps       =   steps < step.getAttribute('data-step') ? step.getAttribute('data-step') : steps;
-            });
-            slide.steps         =   parseFloat(steps); // change the number to a Float so we can do math with it
+            steps           =   queryElements(slide, '[data-step]:not([data-step="0"])'), // we exclude the data-step="0" slides since they appear with the initial slide view
+            stepsIntsOrig   =   dedupe(steps.map(getStepNumber)), // get an array of just the step numbers, deduped
+            stepsInts       =   range(1, stepsIntsOrig.length), // reset the steps to fix any missing numbers; we start at 1 since the 0s aren't counted here
+            stepsMax        =   Math.max.apply(null, stepsInts); // calculate the max step
+
+            if(!(stepsIntsOrig.length === stepsInts.length && sum(stepsIntsOrig) === sum(stepsInts))) {
+                // the markup has skipped one or more steps, so correct that
+                steps.forEach(function(step) {
+                    step.setAttribute('data-step', stepsInts[stepsIntsOrig.indexOf(JSON.parse(step.getAttribute('data-step')))]);
+                });
+            }
+
+            slide.steps         =   isFinite(stepsMax) ? stepsMax : 0; // set the steps property to the maximum step number for use in navigation
             slide.setAttribute('data-current-step', 0); // add a data attribute for use in presenter mode
-            slide.setAttribute('data-steps', slide.steps.toFixed('0')); // add a data attribute for use in presenter mode
+            slide.setAttribute('data-steps', slide.steps); // add a data attribute for use in presenter mode
             slide.currentStep   =   0; // init the currentStep to 0
             slide.setAttribute('data-slide', index + 1); // add a data attribute for use in presenter mode
             slide.setAttribute('data-total', _deck.slides.length); // add a data attribute for use in presenter mode; kinda stupid we have to do this on each one
