@@ -295,7 +295,7 @@ An integer of how many milliseconds a swipe gesture must occur within to be cons
 
 ## JavaScript Events
 
-There are several events that you may attach listeners to in order to interact with the deck programattically. Each event is sent from the deck element, so you must attach either to that element or one of its parents to receive the events.
+There are several events that you may attach listeners to in order to interact with the deck programattically. Each event is sent from the deck element, so you must attach either to that element or one of its parents to receive the events. See the [sample Google Analyics integration](https://github.com/dryan/decss/blob/master/google-analytics.js) for a demo.
 
 Each event's `detail` property is an object. Every event detail has a `deck` property pointing to the Deck instance that sent the event. Some events' `detail`s also have a `sender` property is added to the event's `detail` indicating if the end event was reached via keyboard, touch, message (from the sync server) or a custom sender that you have used. Additionally, some events have additional properties as outlined below.
 
