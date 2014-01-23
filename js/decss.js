@@ -212,6 +212,7 @@
                 _deck.home();
             }
         }
+        _deck.__body.setAttribute('data-current-slide', cleanHash());
 
         // add a class to the html tag; by default the slides are hidden until everything loads and this class is added
         window.addEventListener('load', function() {
