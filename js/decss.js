@@ -377,11 +377,13 @@
                 _deck.__socket.onopen      =   function() {
                     _deck.__socketReady    =   true;
                     _deck.__socketSend({'type': 'ping'});
+                    _deck.__body.setAttribute('data-syncing', true);
                 };
                 _deck.__socket.onerror     =   function(error) {
                     try {
                         console.error('socket error', error);
                     } catch(e) {}
+                    _deck.__body.setAttribute('data-syncing', false);
                 };
                 _deck.__socket.onmessage   =   function(message) {
                     _deck.__debug('received message', message);
@@ -396,7 +398,7 @@
                     } else if(message.type === 'pong') {
                         controller      =   message.auth;
                         _deck.inControl =   !!controller;
-                        _deck.deck.setAttribute('data-in-control', !!controller);
+                        _deck.__body.setAttribute('data-in-control', !!controller);
                         if(_deck.allowControl === null) {
                             _deck.allowControl  =   true;
                         }
