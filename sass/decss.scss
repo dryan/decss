@@ -204,6 +204,10 @@ figure {
     &.five-up {
         @include column-count(5);
     }
+    figcaption {
+        text-align: center;
+        text-align-last: center;
+    }
 }
 
 img {
