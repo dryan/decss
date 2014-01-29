@@ -404,7 +404,8 @@ progress {
 }
 
 #timer,
-#selector {
+#selector,
+#viewers {
     position: absolute;
     z-index: 10;
     top: -120px;
@@ -427,5 +428,17 @@ progress {
     max-width: 20%;
     .presenter & {
         top: 3em;
+    }
+}
+#viewers {
+    width: 20%;
+    text-align: center;
+    font-size: 16px;
+    .presenter & {
+        top: 100%;
+        margin-top: -3em;
+        &:before {
+            content: "Live viewers: ";
+        }
     }
 }

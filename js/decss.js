@@ -97,6 +97,7 @@
         this.__progress         =   document.createElement('progress');
         this.__timer            =   document.createElement('time');
         this.__selector         =   document.createElement('select');
+        this.__viewers          =   document.createElement('div');
         this.__started          =   null;
         this.__socket           =   null;
         this.__socketReady      =   false;
@@ -131,6 +132,10 @@
         _deck.__timer.setAttribute('id', 'timer');
         _deck.__timer.innerHTML =   '0:00';
         _deck.__body.appendChild(_deck.__timer);
+
+        // set up the viewers div
+        _deck.__viewers.setAttribute('id', 'viewers');
+        _deck.__body.appendChild(_deck.__viewers);
 
         // loop through each deck and do the initial setup
         _deck.slides.forEach(function(slide, index) {
@@ -402,6 +407,8 @@
                         if(_deck.allowControl === null) {
                             _deck.allowControl  =   true;
                         }
+                    } else if(message.type === 'viewers') {
+                        _deck.__viewers.innerHTML   =   message.viewers;
                     }
                 };
                 _deck.__socket.onclose     =   function() {
