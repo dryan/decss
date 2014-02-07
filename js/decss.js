@@ -510,7 +510,7 @@
             queryElements(slide, 'audio:not([data-step]):not([controls]),video:not([data-step]):not([controls])').forEach(function(media) {
                 if(media.play) {
                     if(media.played.length) {
-                        media.src   =   media.currentSrc;
+                        media.load();
                     }
                     media.play();
                 }
@@ -520,14 +520,17 @@
             oldSlide                =   _deck.currentSlide;
             _deck.currentSlide      =   slide;
             _deck.currentPosition   =   _deck.slides.indexOf(slide);
-            if(Math.abs(_deck.currentPosition - oldPosition) > 1) {
+            if(Math.abs(_deck.currentPosition - oldPosition) !== 0) {
                 // we've skipped some slides
                 if(_deck.currentPosition - oldPosition > 0) {
                     // we've jumped ahead
                     while(oldPosition < _deck.currentPosition) {
                         oldSlide    =   _deck.slides[oldPosition];
-                        queryElements(oldSlide, '[data-step]:not(.active)').forEach(function(step) {
+                        queryElements(oldSlide, '[data-step]').forEach(function(step) {
                             step.classList.add('active');
+                            if(step.pause) {
+                                step.pause();
+                            }
                         });
                         oldSlide.currentStep    =   oldSlide.steps;
                         oldPosition +=  1;
@@ -552,6 +555,9 @@
                 while(slide.currentStep > step) {
                     queryElements(_deck.currentSlide, '[data-step="' + _deck.currentSlide.currentStep + '"]').forEach(function(step) {
                         step.classList.remove('active');
+                        if(step.pause) {
+                            step.pause();
+                        }
                     });
                     _deck.currentSlide.currentStep    -=  1;
                     _deck.currentSlide.setAttribute('data-current-step', _deck.currentSlide.currentStep);
@@ -565,13 +571,23 @@
                         step.classList.add('active');
                         if(step.play) {
                             if(step.played.length) {
-                                step.src   =   step.currentSrc;
+                                step.load();
                             }
                             step.play();
                         }
                     });
                 }
             }
+        } else if(slide && slide === _deck.currentSlide && typeof step !== 'undefined' && step === slide.currentStep) {
+            queryElements(_deck.currentSlide, '[data-step="' + _deck.currentSlide.currentStep + '"]').forEach(function(step) {
+                step.classList.add('active');
+                if(step.play) {
+                    if(step.played.length) {
+                        step.load();
+                    }
+                    step.play();
+                }
+            });
         }
         _deck.currentSlide.setAttribute('data-current-step', _deck.currentSlide.currentStep);
         _deck.__emitEvent('decsschange', {'slide': _deck.currentSlide, 'step': _deck.currentSlide.currentStep, 'sender': sender});
