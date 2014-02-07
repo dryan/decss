@@ -133,6 +133,11 @@
         _deck.__timer.innerHTML =   '0:00';
         _deck.__body.appendChild(_deck.__timer);
 
+        // if the timer should be a clock, start it now
+        if(_deck.deck.getAttribute('data-counter') === 'time') {
+            _deck.__updateClock();
+        }
+
         // set up the viewers div
         _deck.__viewers.setAttribute('id', 'viewers');
         _deck.__body.appendChild(_deck.__viewers);
@@ -435,11 +440,32 @@
         if(!_deck.__started) {
             _deck.__started    =   now;
         }
+        if(_deck.deck.getAttribute('data-counter') === 'time') {
+            return;
+        }
         elapsed =   now - _deck.__started;
         _deck.__timer.innerHTML =   [Math.floor(elapsed / 60000), lPad(Math.floor(elapsed / 1000) % 60, '0', 2)].join(':');
         setTimeout(function() {
             _deck.__updateTimer();
         }, 1000);
+    };
+
+    Deck.prototype.__updateClock    =   function() {
+        function hourTo12(hour) {
+            if(hour >= 12) {
+                hour    =    hour - 12;
+            }
+            if(hour === 0) {
+                hour    =   12;
+            }
+            return hour;
+        }
+        var
+        now     =   new Date();
+        _deck.__timer.innerHTML =   [hourTo12(now.getHours()), now.getMinutes()].join(':');
+        setTimeout(function() {
+            _deck.__updateClock();
+        }, (60 - now.getSeconds()) * 1000);
     };
 
     Deck.prototype.__setProgress    =   function(value) {
