@@ -287,7 +287,7 @@ An array of all the slide instances in the deck.
 
 ### Decss.touchDistance
 
-An integer of how many pixels a swipe gesture must be to be considered for navigation. Determined intially by the deck element's `data-touch-distance` attribute.
+An integer of how many pixels a swipe gesture must be to be considered for navigation. Determined initially by the deck element's `data-touch-distance` attribute.
 
 ### Decss.touchDuration
 
